@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "testcafe": "0.15.0"
+  }
+}
