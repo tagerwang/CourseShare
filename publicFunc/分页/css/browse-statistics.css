@@ -1,0 +1,105 @@
+.brow-statis-main{
+    display: inline-block;
+    width: 780px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+.brow-statis-main-head{
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+.brow-statis-head-text{
+    margin-top: 20px;
+}
+.head-text-item{
+    width: 20%;
+    box-sizing: border-box;
+    text-align: center;
+    border-left: 1px solid #ccc;
+}
+.head-text-item.first{
+    border: none;
+}
+.head-text-item p{
+    margin: 6px;
+}
+.brow-statis-main-content{
+    margin-top: 20px;
+}
+.brow-statis-main-content .trend-map,.brow-statis-main-content .interview-record{
+    display: inline-block;
+    border: 1px solid #ccc;
+    height: 330px;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+.brow-statis-main-content .trend-map{
+    padding: 20px;
+    width: 480px;
+}
+.brow-statis-main-content .interview-record{
+    margin-left: 20px;
+    padding: 20px 10px 10px;
+    width: 280px;
+}
+#dataTrendMap{
+    width: 420px;
+    height: 280px;
+}
+
+.interview-record-list{
+    margin-top: 10px;
+}
+.interview-record-list li{
+    margin: 5px 0;
+    width: 258px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.brow-statis-main-footer{
+    margin-top: 20px;
+}
+.brow-statis-main-footer .source-interview,.brow-statis-main-footer .access-proportion{
+    display: inline-block;
+    border: 1px solid #ccc;
+    height: 330px;
+    box-sizing: border-box;
+    vertical-align: middle;
+    padding: 20px 30px;
+    width: 380px;
+}
+.brow-statis-main-footer .source-interview{
+    margin-right: 20px;
+}
+#dataSourceInterview,#dataAccessProportion{
+    width: 330px;
+    height: 280px;
+}
+.moreMsg{
+    color: #0000FF;
+    margin-top: -20px;
+    cursor: pointer;
+}
+.interview_record{
+    width: 780px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    display: none;
+    float: right;
+}
+td,th{
+    text-align:center;
+}
+.interview_record_title{
+    font-size: 16px;
+    font-weight: 700;
+    height: 40px;
+    line-height: 40px;
+}
+#pageLimit li a.active{
+background: #3d94ff;
+color:#fff;
+}
+nav{text-align: center}
+li.PreviousPage,li.NextPage{cursor:pointer;}

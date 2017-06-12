@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=10,IE=9,IE=edge,chrome=1">
+    <title>浏览统计-印章网</title>
+    <meta name="keywords" content="印章备案查询,刻章点查询,刻章密码找回,印章知识,印章申请,印章业务进度查询,印章鉴别,电子合同验真,电子印章,印章在线管理">
+    <meta name="description" content="印章网面向社会公众提供印章备案信息查询、合法刻章服务点查询、刻章密码找回、政策法规、行业动态、印章知识、办事指南等权威资讯和服务，是最可信、便捷的全国公章大数据平台。">
+    <link rel="stylesheet" href="css/plugin/bootstrap.min.css">
+    <script src="js/beforeCommon.min.js"></script>
+    <script src="js/before.js"></script>
+    <script src="js/plugin/echarts.min.js"></script>
+    <script src="js/plugin/china.js"></script>
+    <link href="css/user.css" rel="stylesheet" type="text/css">
+    <link href="css/PC_reset.css" rel="stylesheet" type="text/css">
+    <link href="css/public.css" rel="stylesheet" type="text/css">
+    <link href="css/browse-statistics.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="all-user-wrap">
+    <div class="all-user-main">
+        <script src="js/all_header.js"></script>
+        <script src="js/user_head.js"></script>
+        <div class="user-main user-center">
+            <script src="js/user_nav_list.js"></script>
+            <div class="interview_record" style="display:block">
+                <div class="interview_record_title">受访记录</div>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>序号</th>
+                        <th>企业名</th>
+                        <th>来访时间</th>
+                    </tr>
+                    <tr class="module">
+                        <td class="index"></td>
+                        <td class="company"></td>
+                        <td class="time"></td>
+                    </tr>
+                </table>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination" id="pageLimit">
+                        <li class="PreviousPage">
+                            <a aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="appendPage NextPage">
+                            <a aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/all_bottom.js"></script>
+<script src="js/after.js"></script>
+<!-- 提示框 -->
+<div class="modal fade" id="customAlert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="alert-tips-modal-content">
+            <div id="" class="modal-body">
+                <span class="text" id="alertText"></span>
+                <span class="close" data-dismiss="modal">X</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    /**
+ * Created by Administrator on 2017/5/24 0024.
+ */
+var obj;
+var initObj = {
+    init: function () {
+        $(".moreMsg").click(function () {
+            $(".brow-statis-main").hide();
+            $(".interview_record").show();
+        });
+        this.visit();
+        this.clickPage();
+    },
+    visit: function (pageNumber, pageSize) {
+        var _this = this;
+        $.ajax({
+            type: "get",
+            async: true,
+            datatype: "json",
+            url: "http://localhost:8086/api/sealnet/visitorsList",
+            data: {
+                "pageNumber": pageNumber || 1,
+                "pageSize": pageSize || 5,
+                "order":"asc"
+            },
+            success: function (data) {
+                //var data=JSON.parse(data);
+                if (data.code == 0) {
+                    _this.totalPage = Math.ceil(data.data.totalNumber / data.data.pageSize);
+                    if(_this.totalPage<1){
+                        $("nav").hide()
+                    }
+                    _this.pagination(data.data.pageNumber);
+                    //_this.totalPage=(data.data.pageNumber-1)*5+1
+                    $(".interview_record .module").remove();
+                    $.each(data.data.list, function (ind, val) {
+                        $(".interview_record tbody").append(_this.list).children(".module").eq(ind).
+                            find(".index").html(parseInt(ind + 1)).
+                            siblings(".company").html(val.name).
+                            siblings(".time").html(val.time)
+                    })
+                }
+            },
+            error: function (jqXHR) {
+                console.log(jqXHR)
+            }
+        })
+    },
+    pagination: function (pageNumber) {
+        $("#pageLimit li.index").remove();
+        var firstShowPage, maxShowPage = 5
+        if (pageNumber <= 3) {
+            firstShowPage = 1
+        } else {
+            firstShowPage = pageNumber - 2;
+        }
+        var lastShowPage = maxShowPage + firstShowPage - 1;
+        if (lastShowPage > this.totalPage) {
+            lastShowPage = this.totalPage;
+        }
+        for (var i = firstShowPage; i <= lastShowPage; i++) {
+            pageIndex = '<li class="index"><a>' + i + '</a></li>';
+            $(".appendPage").before(pageIndex)
+        };
+
+        if (!this.active) { this.active = $("#pageLimit .index").eq(0) } else {
+            this.active = $("#pageLimit a:contains(" + this.active.find('a').text() + ")").parents("li");
+        };
+
+        this.active.addClass("active").siblings().removeClass("active")
+    },
+    pageData: function () {
+        this.active = '';
+        this.totalPage = '';
+        this.list=$(".interview_record .module")[0].outerHTML;
+    },
+    clickPage: function () {
+        var _this = this;
+        this.pageData();
+        $(".all-user-main").on("click", "li.index", function () {
+            _this.active = $(this);
+            _this.visit($(this).text());
+        })
+        $(".all-user-main").on("click", "li.PreviousPage", function () {
+            if (parseInt($("#pageLimit li.active").text()) != 1) { _this.active = _this.active.prev(); }
+            var currentPage = Math.min(parseInt($("li.active").text()) - 1, _this.totalPage)
+            _this.visit(currentPage);
+        })
+        $(".all-user-main").on("click", "li.NextPage", function () {
+            if (parseInt($("#pageLimit li.active").text()) != _this.totalPage) { _this.active = _this.active.next(); }
+            var currentPage = Math.min(parseInt($("li.active").text()) + 1, _this.totalPage)
+            _this.visit(currentPage);
+        })
+    }
+}
+initObj.init();
+</script>
+</body>
+</html>
